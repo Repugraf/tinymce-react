@@ -28,6 +28,9 @@
   "keywords": [],
   "author": "Tiny Technologies",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "prop-types": "^15.6.2",
     "tinymce": "^5.5.0",
