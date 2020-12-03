@@ -6,9 +6,9 @@
  *
  */
 
-import { TinyMCE as TinyMCEGlobal } from 'tinymce';
+import { TinyMCE as TinyMCEGlobal } from "tinymce";
 
-const getGlobal = (): any => (typeof window !== 'undefined' ? window : global);
+const getGlobal = (): any => (typeof window !== "undefined" ? window : global);
 
 const getTinymce = (): TinyMCEGlobal | null => {
   const global = getGlobal();

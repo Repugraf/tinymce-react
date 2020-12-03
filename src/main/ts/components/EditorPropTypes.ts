@@ -6,9 +6,9 @@
  *
  */
 
-import * as PropTypes from 'prop-types';
-import { IEvents } from '../Events';
-import { IProps } from './Editor';
+import * as PropTypes from "prop-types";
+import { IEvents } from "../Events";
+import { IProps } from "./Editor";
 
 export type CopyProps<T> = { [P in keyof T]: PropTypes.Requireable<unknown> };
 
@@ -88,7 +88,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   init: PropTypes.object,
   initialValue: PropTypes.string,
   onEditorChange: PropTypes.func,
-  outputFormat: PropTypes.oneOf(['html', 'text']),
+  outputFormat: PropTypes.oneOf(["html", "text"]),
   value: PropTypes.string,
   tagName: PropTypes.string,
   cloudChannel: PropTypes.string,
@@ -98,9 +98,9 @@ export const EditorPropTypes: IEditorPropTypes = {
   textareaName: PropTypes.string,
   tinymceScriptSrc: PropTypes.string,
   scriptLoading: PropTypes.shape({
-    'async': PropTypes.bool,
-    'defer': PropTypes.bool,
-    'delay': PropTypes.number
+    "async": PropTypes.bool,
+    "defer": PropTypes.bool,
+    "delay": PropTypes.number
   }),
   ...eventPropTypes
 };

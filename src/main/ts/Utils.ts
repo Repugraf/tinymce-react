@@ -6,12 +6,12 @@
  *
  */
 
-import { eventPropTypes, IEventPropTypes } from './components/EditorPropTypes';
-import { IAllProps } from './components/Editor';
-import { EventHandler } from './Events';
-import { Editor as TinyMCEEditor, EditorEvent } from 'tinymce';
+import { eventPropTypes, IEventPropTypes } from "./components/EditorPropTypes";
+import { IAllProps } from "./components/Editor";
+import { EventHandler } from "./Events";
+import { Editor as TinyMCEEditor, EditorEvent } from "tinymce";
 
-export const isFunction = (x: unknown): x is Function => typeof x === 'function';
+export const isFunction = (x: unknown): x is Function => typeof x === "function";
 
 const isEventProp = (name: string): name is keyof IEventPropTypes => {
   return name in eventPropTypes;
@@ -32,7 +32,12 @@ const findEventHandlers = (props: Partial<IAllProps>): EventHandlerSet[] => {
     }));
 };
 
-export const bindHandlers = (editor: TinyMCEEditor, props: Partial<IAllProps>, boundHandlers: Record<string, (event: EditorEvent<unknown>) => unknown>): void => {
+export const bindHandlers = (
+  editor: TinyMCEEditor,
+  props: Partial<IAllProps>,
+  boundHandlers: Record<string,
+    (event: EditorEvent<unknown>) => unknown>
+): void => {
   findEventHandlers(props).forEach((found) => {
     // Unbind old handler
     const oldHandler = boundHandlers[found.eventName];
@@ -55,21 +60,24 @@ export const uuid = (prefix: string): string => {
 
   unique++;
 
-  return prefix + '_' + random + unique + String(time);
+  return prefix + "_" + random + unique + String(time);
 };
 
 export const isTextarea = (element: Element | null): element is HTMLTextAreaElement => {
-  return element !== null && element.tagName.toLowerCase() === 'textarea';
+  return element !== null && element.tagName.toLowerCase() === "textarea";
 };
 
 const normalizePluginArray = (plugins?: string | string[]): string[] => {
-  if (typeof plugins === 'undefined' || plugins === '') {
+  if (typeof plugins === "undefined" || plugins === "") {
     return [];
   }
 
-  return Array.isArray(plugins) ? plugins : plugins.split(' ');
+  return Array.isArray(plugins) ? plugins : plugins.split(" ");
 };
 
-export const mergePlugins = (initPlugins: string | string[] | undefined, inputPlugins: string | string[] | undefined): string[] => {
+export const mergePlugins = (
+  initPlugins: string | string[] | undefined,
+  inputPlugins: string | string[] | undefined
+): string[] => {
   return normalizePluginArray(initPlugins).concat(normalizePluginArray(inputPlugins));
 };

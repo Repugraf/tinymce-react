@@ -1,15 +1,15 @@
-import { Assertions, Chain, Logger, Pipeline, GeneralSteps } from '@ephox/agar';
-import { UnitTest } from '@ephox/bedrock-client';
-import { cRemove, cRender, cEditor, cReRender } from '../alien/Loader';
-import { VersionLoader } from '@tinymce/miniature';
+import { Assertions, Chain, Logger, Pipeline, GeneralSteps } from "@ephox/agar";
+import { UnitTest } from "@ephox/bedrock-client";
+import { cRemove, cRender, cEditor, cReRender } from "../alien/Loader";
+import { VersionLoader } from "@tinymce/miniature";
 
-import { getTinymce } from '../../../main/ts/TinyMCE';
-import { EventStore, cAssertContent, cSetContent } from '../alien/TestHelpers';
-import { Editor as TinyMCEEditor, EditorEvent, Events } from 'tinymce';
+import { getTinymce } from "../../../main/ts/TinyMCE";
+import { EventStore, cAssertContent, cSetContent } from "../alien/TestHelpers";
+import { Editor as TinyMCEEditor, EditorEvent, Events } from "tinymce";
 
-type SetContentEvent = EditorEvent<Events.EditorEventMap['SetContent']>;
+type SetContentEvent = EditorEvent<Events.EditorEventMap["SetContent"]>;
 
-UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
+UnitTest.asynctest("EditorBehaviorTest", (success, failure) => {
 
   const isEditor = (val: unknown): val is TinyMCEEditor => {
     const tinymce = getTinymce();
@@ -22,117 +22,117 @@ UnitTest.asynctest('EditorBehaviorTest', (success, failure) => {
   const eventStore = EventStore();
 
 
-  const sTestVersion = (version: '4' | '5') => VersionLoader.sWithVersion(
+  const sTestVersion = (version: "4" | "5") => VersionLoader.sWithVersion(
     version,
     GeneralSteps.sequence([
-      Logger.t('Assert structure of tinymce and tinymce-react events', Chain.asStep({}, [
+      Logger.t("Assert structure of tinymce and tinymce-react events", Chain.asStep({}, [
         cRender({
-          onEditorChange: eventStore.createHandler('onEditorChange'),
-          onSetContent: eventStore.createHandler('onSetContent')
+          onEditorChange: eventStore.createHandler("onEditorChange"),
+          onSetContent: eventStore.createHandler("onSetContent")
         }),
 
-        cEditor(cSetContent('<p>Initial Content</p>')),
+        cEditor(cSetContent("<p>Initial Content</p>")),
 
         // tinymce native event
-        eventStore.cEach<SetContentEvent>('onSetContent', (events) => {
-          Assertions.assertEq('First arg should be event from Tiny', '<p>Initial Content</p>', events[0].editorEvent.content);
-          Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
+        eventStore.cEach<SetContentEvent>("onSetContent", (events) => {
+          Assertions.assertEq("First arg should be event from Tiny", "<p>Initial Content</p>", events[0].editorEvent.content);
+          Assertions.assertEq("Second arg should be editor", true, isEditor(events[0].editor));
         }),
 
         // tinymce-react unique event
-        eventStore.cEach<string>('onEditorChange', (events) => {
-          Assertions.assertEq('First arg should be new content', '<p>Initial Content</p>', events[0].editorEvent);
-          Assertions.assertEq('Second arg should be editor', true, isEditor(events[0].editor));
+        eventStore.cEach<string>("onEditorChange", (events) => {
+          Assertions.assertEq("First arg should be new content", "<p>Initial Content</p>", events[0].editorEvent);
+          Assertions.assertEq("Second arg should be editor", true, isEditor(events[0].editor));
         }),
 
         eventStore.cClearState,
         cRemove
       ])),
 
-      Logger.t('onEditorChange should only fire when the editors content changes', Chain.asStep({}, [
+      Logger.t("onEditorChange should only fire when the editors content changes", Chain.asStep({}, [
         cRender({
-          onEditorChange: eventStore.createHandler('onEditorChange')
+          onEditorChange: eventStore.createHandler("onEditorChange")
         }),
 
-        cEditor(cSetContent('<p>Initial Content</p>')),
-        cEditor(cSetContent('<p>Initial Content</p>')), // Repeat
+        cEditor(cSetContent("<p>Initial Content</p>")),
+        cEditor(cSetContent("<p>Initial Content</p>")), // Repeat
 
-        eventStore.cEach('onEditorChange', (events) => {
-          Assertions.assertEq('onEditorChange should have been fired once', 1, events.length);
-        }),
-
-        eventStore.cClearState,
-        cRemove
-      ])),
-
-      Logger.t('Should be able to register an event handler after initial render', Chain.asStep({}, [
-        cRender({ initialValue: '<p>Initial Content</p>' }),
-        cReRender({ onSetContent: eventStore.createHandler('onSetContent') }),
-
-        cEditor(cAssertContent('<p>Initial Content</p>')),
-        cEditor(cSetContent('<p>New Content</p>')),
-
-        eventStore.cEach<SetContentEvent>('onSetContent', (events) => {
-          Assertions.assertEq('Should have bound handler, hence new content', '<p>New Content</p>', events[0].editorEvent.content);
+        eventStore.cEach("onEditorChange", (events) => {
+          Assertions.assertEq("onEditorChange should have been fired once", 1, events.length);
         }),
 
         eventStore.cClearState,
         cRemove
       ])),
 
-      Logger.t('Providing a new event handler and re-rendering should unbind old handler and bind new handler', Chain.asStep({}, [
-        cRender({ onSetContent: eventStore.createHandler('InitialHandler') }),
-        cEditor(cSetContent('<p>Initial Content</p>')),
+      Logger.t("Should be able to register an event handler after initial render", Chain.asStep({}, [
+        cRender({ initialValue: "<p>Initial Content</p>" }),
+        cReRender({ onSetContent: eventStore.createHandler("onSetContent") }),
 
-        cReRender({ onSetContent: eventStore.createHandler('NewHandler') }),
-        cEditor(cSetContent('<p>New Content</p>')),
+        cEditor(cAssertContent("<p>Initial Content</p>")),
+        cEditor(cSetContent("<p>New Content</p>")),
 
-        eventStore.cEach<SetContentEvent>('InitialHandler', (events) => {
-          Assertions.assertEq('Initial handler should have been unbound, hence initial content', '<p>Initial Content</p>', events[0].editorEvent.content);
-        }),
-        eventStore.cEach<SetContentEvent>('NewHandler', (events) => {
-          Assertions.assertEq('New handler should have been bound, hence new content', '<p>New Content</p>', events[0].editorEvent.content);
+        eventStore.cEach<SetContentEvent>("onSetContent", (events) => {
+          Assertions.assertEq("Should have bound handler, hence new content", "<p>New Content</p>", events[0].editorEvent.content);
         }),
 
         eventStore.cClearState,
         cRemove
       ])),
 
-      Logger.t('"format" prop should set the format of the content emitted by onEditorChange', Chain.asStep({}, [
+      Logger.t("Providing a new event handler and re-rendering should unbind old handler and bind new handler", Chain.asStep({}, [
+        cRender({ onSetContent: eventStore.createHandler("InitialHandler") }),
+        cEditor(cSetContent("<p>Initial Content</p>")),
+
+        cReRender({ onSetContent: eventStore.createHandler("NewHandler") }),
+        cEditor(cSetContent("<p>New Content</p>")),
+
+        eventStore.cEach<SetContentEvent>("InitialHandler", (events) => {
+          Assertions.assertEq("Initial handler should have been unbound, hence initial content", "<p>Initial Content</p>", events[0].editorEvent.content);
+        }),
+        eventStore.cEach<SetContentEvent>("NewHandler", (events) => {
+          Assertions.assertEq("New handler should have been bound, hence new content", "<p>New Content</p>", events[0].editorEvent.content);
+        }),
+
+        eventStore.cClearState,
+        cRemove
+      ])),
+
+      Logger.t("\"format\" prop should set the format of the content emitted by onEditorChange", Chain.asStep({}, [
         cRender({
-          outputFormat: 'text',
-          onEditorChange: eventStore.createHandler('onEditorChange')
+          outputFormat: "text",
+          onEditorChange: eventStore.createHandler("onEditorChange")
         }),
 
         Chain.op((context) => {
-          context.editor.setContent('<p>Test #1</p>');
+          context.editor.setContent("<p>Test #1</p>");
         }),
 
-        eventStore.cEach<string>('onEditorChange', (events) => {
-          Assertions.assertEq('Content emitted should be format: "text"', 'Test #1', events[0].editorEvent);
+        eventStore.cEach<string>("onEditorChange", (events) => {
+          Assertions.assertEq("Content emitted should be format: \"text\"", "Test #1", events[0].editorEvent);
         }),
 
         cReRender({
-          outputFormat: 'html',
-          onEditorChange: eventStore.createHandler('onEditorChange2')
+          outputFormat: "html",
+          onEditorChange: eventStore.createHandler("onEditorChange2")
         }),
 
         Chain.op((context) => {
-          context.editor.setContent('<p>Test #2</p>');
+          context.editor.setContent("<p>Test #2</p>");
         }),
 
-        eventStore.cEach<string>('onEditorChange2', (events) => {
-          Assertions.assertEq('Content emitted should be format: "html"', '<p>Test #2</p>', events[0].editorEvent);
+        eventStore.cEach<string>("onEditorChange2", (events) => {
+          Assertions.assertEq("Content emitted should be format: \"html\"", "<p>Test #2</p>", events[0].editorEvent);
         }),
 
         eventStore.cClearState,
         cRemove
-      ])),
+      ]))
     ])
   );
 
   Pipeline.async({}, [
-    sTestVersion('5'),
-    sTestVersion('4')
+    sTestVersion("5"),
+    sTestVersion("4")
   ], success, failure);
 });

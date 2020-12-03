@@ -1,7 +1,7 @@
-import { Chain, Assertions } from '@ephox/agar';
-import { Cell, Obj } from '@ephox/katamari';
-import { ApiChains } from '@ephox/mcagar';
-import { Editor as TinyMCEEditor } from 'tinymce';
+import { Chain, Assertions } from "@ephox/agar";
+import { Cell, Obj } from "@ephox/katamari";
+import { ApiChains } from "@ephox/mcagar";
+import { Editor as TinyMCEEditor } from "tinymce";
 
 interface EventHandlerArgs<T> {
   editorEvent: T;
@@ -31,7 +31,7 @@ const EventStore = () => {
   const cEach = <T>(name: string, assertState: (state: EventHandlerArgs<T>[]) => void) => {
     return Chain.fromChains([
       Chain.op(() => {
-        Assertions.assertEq('State from "' + name + '" handler should exist', true, name in state.get());
+        Assertions.assertEq("State from \"" + name + "\" handler should exist", true, name in state.get());
         assertState(state.get()[name] as unknown as EventHandlerArgs<T>[]);
       })
     ]);

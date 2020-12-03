@@ -6,7 +6,7 @@
  *
  */
 
-import { uuid } from './Utils';
+import { uuid } from "./Utils";
 
 export type callbackFn = () => void;
 export interface IStateObj {
@@ -19,7 +19,7 @@ export interface IStateObj {
 const createState = (): IStateObj => {
   return {
     listeners: [],
-    scriptId: uuid('tiny-script'),
+    scriptId: uuid("tiny-script"),
     scriptLoading: false,
     scriptLoaded: false
   };
@@ -33,20 +33,25 @@ interface ScriptLoader {
 const CreateScriptLoader = (): ScriptLoader => {
   let state: IStateObj = createState();
 
-  const injectScriptTag = (scriptId: string, doc: Document, url: string, async: boolean, defer: boolean, callback: callbackFn) => {
-    const scriptTag = doc.createElement('script');
-    scriptTag.referrerPolicy = 'origin';
-    scriptTag.type = 'application/javascript';
+  const injectScriptTag = (
+    scriptId: string, doc: Document,
+    url: string, async: boolean,
+    defer: boolean,
+    callback: callbackFn
+  ) => {
+    const scriptTag = doc.createElement("script");
+    scriptTag.referrerPolicy = "origin";
+    scriptTag.type = "application/javascript";
     scriptTag.id = scriptId;
     scriptTag.src = url;
     scriptTag.async = async;
     scriptTag.defer = defer;
 
     const handler = () => {
-      scriptTag.removeEventListener('load', handler);
+      scriptTag.removeEventListener("load", handler);
       callback();
     };
-    scriptTag.addEventListener('load', handler);
+    scriptTag.addEventListener("load", handler);
     if (doc.head) {
       doc.head.appendChild(scriptTag);
     }
